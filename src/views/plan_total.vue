@@ -1,6 +1,7 @@
 <template>
   <el-scrollbar height="100vh">
     <div>
+      <!-- 标题：{{目的城市}}旅程 -->
       <el-header class="header" style="padding-top: 17px; height: 75px">
         <el-row>
           <el-col :span="6"> </el-col>
@@ -12,12 +13,16 @@
       </el-header>
 
       <el-main class="container main-content">
+        <!-- 每日路线卡片 -->
         <el-card class="box-card" shadow="hover" style="margin-top: 30px">
+          <!-- icon+daily POI 标题  -->
           <div class="card-header">
             <el-icon><calendar /></el-icon>
             <span>Daily POI</span>
           </div>
+          <!-- 每日的信息总览 card -->
           <el-row :gutter="10">
+            <!-- for循坏一天一个卡片 -->
             <el-col :span="24" v-for="(day, index) in dailyPOI" :key="index">
               <el-card class="poi-card">
                 <h3 class="day-title">{{ day.title }}</h3>
@@ -30,11 +35,14 @@
             </el-col>
           </el-row>
         </el-card>
+        <!-- 高德地图部分 -->
         <el-card class="box-card" shadow="hover" style="margin-top: 32px; margin-bottom: 50px">
+          <!-- icon+travel route 标题  -->
           <div class="card-header">
             <el-icon><map-location /></el-icon>
             <span class="travel-route-title">Travel route</span>
           </div>
+          <!-- 地图 -->
           <div id="map" class="map-container"></div>
         </el-card>
       </el-main>
@@ -50,6 +58,7 @@ import { useRouter } from 'vue-router'
 export default {
   name: 'TravelItinerary',
   components: {
+    //icon组件声明
     ArrowLeft,
     View,
     Calendar,
@@ -57,11 +66,11 @@ export default {
   },
   data() {
     return {
-      dailyPOI: [],
-      dailyPOI1: [],
-      map: null,
-      center: [118.796877, 32.060255],
-      targetCity: ''
+      dailyPOI: [], //对应后端的 itinerary，用来渲染卡片
+      dailyPOI1: [], //和dailyPOI差不多，用来画高德路线
+      map: null, //高德地图初始化
+      center: [118.796877, 32.060255], //高德地图中心城市
+      targetCity: '' //旅游目的城市
     }
   },
   created() {
@@ -70,13 +79,13 @@ export default {
   methods: {
     async fetchItineraryData() {
       try {
-        const id = this.$route.params.id
+        const id = this.$route.params.id //获取task_id
         const response = await axios.get(`http://210.28.135.197:8081/get_plan`, {
           //const response = await axios.get(`/plan_POI.json`, {
           params: { task_id: id }
         })
         console.log(response.data)
-        //删除了plan
+
         const itinerary = response.data.plan.itinerary
         this.targetCity = response.data.plan.target_city
 
@@ -84,7 +93,7 @@ export default {
         this.dailyPOI = itinerary.map((day) => ({
           title: `Day ${day.day}`,
           day: day.day,
-          cost: day.cost, // 假设的费用
+          cost: day.cost, // 费用
           route: day.position.join(' ↔ ')
         }))
 
@@ -99,6 +108,7 @@ export default {
     },
 
     initMap() {
+      //地图初始化
       if (typeof AMap !== 'undefined') {
         this.map = new AMap.Map('map', {
           zoom: 12,
@@ -110,6 +120,7 @@ export default {
     },
 
     setCityCenter(city) {
+      //设置地图的中心点
       AMap.plugin('AMap.Geocoder', () => {
         const geocoder = new AMap.Geocoder()
         geocoder.getLocation(city, (status, result) => {
@@ -134,6 +145,7 @@ export default {
     },
 
     planRoute(locations, index) {
+      //绘制路线
       console.log('规划路线的经纬度坐标：', locations)
       AMap.plugin('AMap.Driving', () => {
         const driving = new AMap.Driving({
@@ -156,6 +168,7 @@ export default {
               // 绘制路径并设置颜色
               const path = result.routes[0].steps.flatMap((step) => step.path)
               const colorList = ['#417ab5', '#d93b3a', '#FFA500', '#9CD5E3', '#CEBDCF', '#F37455'] // 定义颜色列表，每天不同颜色
+              //设置路线的样式
               const polyline = new AMap.Polyline({
                 path: path,
                 borderWeight: 1,
@@ -177,6 +190,7 @@ export default {
       })
     },
     viewDetails(day) {
+      //跳转每日规划页面
       this.$router.push({ name: 'Detail', params: { id: this.$route.params.id, day: day } })
     }
   }

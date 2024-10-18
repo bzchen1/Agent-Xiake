@@ -1,7 +1,9 @@
 <template>
+  <!-- 全屏滚动效果 -->
   <el-scrollbar height="100vh" v-loading="loading">
     <el-container class="bg-gray-100 flex items-center justify-center min-h-screen">
       <el-main class="w-full p-8 bg-white shadow-lg rounded-lg">
+        <!-- 标题Travel Plan -->
         <el-row class="flex justify-center" style="margin-bottom: 2rem; margin-top: 2.3rem">
           <h1
             class="text-3xl font-bold mb-4 text-blue-900 text-center"
@@ -10,9 +12,11 @@
             Travel Plan
           </h1>
         </el-row>
+        <!-- 起始城市、目的城市、人数、天数card -->
         <el-row :gutter="20" style="margin-bottom: 1.5rem">
           <el-col :span="2"></el-col>
           <el-col :span="9" style="margin-right: 0rem">
+            <!-- 起始城市、目的城市  -->
             <el-card
               class="bg-blue-100 p-4 rounded-lg mb-6"
               style="background: #cfdfe4; border-radius: 2cap"
@@ -42,7 +46,9 @@
             </el-card>
           </el-col>
           <el-col :span="1"></el-col>
+
           <el-col :span="9">
+            <!-- 人数、天数 -->
             <el-card
               class="bg-blue-100 p-4 rounded-lg mb-6"
               style="background: #cfdfe4; border-radius: 2cap"
@@ -72,6 +78,7 @@
             </el-card>
           </el-col>
         </el-row>
+        <!-- 自然语言输入框 -->
         <el-row>
           <el-col :span="2"></el-col>
           <el-col :span="19">
@@ -93,6 +100,7 @@
             </el-card>
           </el-col>
         </el-row>
+        <!-- 搜索、重置按钮 -->
         <el-row class="flex justify-center" style="margin-top: 1rem">
           <el-button
             type="primary"
@@ -135,22 +143,26 @@ export default {
   data() {
     return {
       form: {
-        startCity: '上海',
-        destinationCity: '杭州',
-        peopleCount: 1,
-        daysCount: 1,
-        additionalRequirements: ''
+        //表格初始化
+        startCity: '上海', //旅游出发城市
+        destinationCity: '杭州', //旅游目的城市
+        peopleCount: 1, //游玩人数
+        daysCount: 1, //游玩天数
+        additionalRequirements: '' //自然语言
       },
-      loading: false // 新增的 loading 状态
+      loading: false //向后端提交form后，如果还没得到后端的task_id，前端呈现loading 状态
     }
   },
   methods: {
     async handleSearch() {
       this.loading = true // 开启加载状态
       try {
+        //后端接口
         const response = await axios.post('http://210.28.135.197:8081/test_plan', this.form)
-        //const response = await axios.post('/plan_2.json', this.form)
+        //本地文件,随便找的一个
+        //const response = await axios.post('/plan_daily.json', this.form)
         console.log('ok!', response.data)
+        //得到信息后跳转计划总览页面
         this.$router.push({ name: 'PlanTotal', params: { id: response.data.task_id } })
       } catch (error) {
         console.error('Failed to send the form data:', error)
@@ -159,6 +171,7 @@ export default {
       }
     },
     handleReset() {
+      //表单重置
       this.form = {
         startCity: '',
         destinationCity: '',

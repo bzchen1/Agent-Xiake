@@ -1,7 +1,7 @@
 <template>
   <el-container class="bg-gray-100">
     <el-main class="max-w-2xl mx-auto p-4">
-      <!-- 标题 -->
+      <!-- 标题:Day{{day}} -->
       <el-row>
         <el-col :span="24" style="text-align: center">
           <h1 style="font-size: 28pt">Day {{ this.$route.params.day }}</h1>
@@ -16,6 +16,7 @@
       >
         <el-row :gutter="20">
           <el-col :span="16">
+            <!-- 飞机/高铁icon +（文字）跨城交通 -->
             <el-row>
               <img
                 v-if="intercityTransportStart.type == 'airplane'"
@@ -44,9 +45,11 @@
                 >城际交通 ( 高铁 )</span
               >
             </el-row>
+            <!-- 地点 -->
             <p class="text-lg font-bold" style="font-size: larger; margin-top: 13px">
               {{ intercityTransportStart.start }} - {{ intercityTransportStart.end }}
             </p>
+            <!-- 其他信息：班次、价格等 -->
             <div class="text-sm text-gray-500" style="margin-top: 1rem">
               <span v-if="intercityTransportStart.type == 'train'">
                 {{ intercityTransportStart.TrainID }}</span
@@ -84,6 +87,7 @@
           class="mb-6"
           placement="top"
         >
+          <!-- 交通card -->
           <el-card
             v-if="activity.trans_detail && activity.trans_detail.length"
             shadow="always"
@@ -136,7 +140,7 @@
               </el-collapse-item>
             </el-collapse>
           </el-card>
-
+          <!-- 景点活动card -->
           <el-card
             v-if="activity.position && activity.position.length"
             shadow="always"
@@ -265,6 +269,7 @@ import { ref } from 'vue'
 export default {
   name: 'DayItinerary',
   components: {
+    //icon组件声明
     House,
     Bowl,
     Place,
@@ -272,9 +277,9 @@ export default {
   },
   data() {
     return {
-      activities: [],
-      intercityTransportStart: null,
-      intercityTransportEnd: null,
+      activities: [], //对应后端的activities
+      intercityTransportStart: null, //换乘起始信息，对应后端intercity_transport_start
+      intercityTransportEnd: null, //换乘起始信息，对应后端intercity_transport_end
       activeCollapse: null,
       dailyPOI1: [],
       map: null,
@@ -290,15 +295,15 @@ export default {
       try {
         const day = this.$route.params.day
         const id = this.$route.params.id
+        //后端请求
         const response = await axios.get(`http://210.28.135.197:8081/get_plan`, {
+          //本地文件读取
           //const response = await axios.get(`/plan_daily`, {
           params: { task_id: id, day: day }
         })
         console.log(response.data)
-        // 保存每一天的位置详情
+        // 保存每一天的位置详情（如果是本地读取请去掉response.data后的plan ↓）
         this.dailyPOI1 = response.data.plan.position_detail
-        //const response = await axios.get('/plan_daily.json')
-        //data后面删了plan
         this.activities = response.data.plan.activities
         this.targetCity = response.data.plan.target_city
         if (response.data.plan.intercity_transport_start) {
@@ -363,6 +368,7 @@ export default {
       }
     },
     setCityCenter(city) {
+      //设置中心城市
       AMap.plugin('AMap.Geocoder', () => {
         const geocoder = new AMap.Geocoder()
         geocoder.getLocation(city, (status, result) => {
@@ -387,6 +393,7 @@ export default {
     },
 
     planRoute(locations) {
+      //画路线
       console.log('规划路线的经纬度坐标：', locations)
       AMap.plugin('AMap.Driving', () => {
         const driving = new AMap.Driving({

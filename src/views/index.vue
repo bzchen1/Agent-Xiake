@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar height="100vh">
     <div style="background-color: white; font-family: sans-serif; color: blue">
-      <!-- Header Section -->
+      <!-- Header Section  -->
       <el-header
         height="90vh"
         style="
@@ -13,6 +13,7 @@
         "
       >
         <div style="text-align: center">
+          <!-- 依次为大标题、文字、按钮 -->
           <h1 style="font-size: 5rem; color: #21bcbe; font-weight: 700; margin-top: 10rem">
             XiaKe Agent
           </h1>
@@ -54,18 +55,19 @@
         </div>
       </el-header>
 
-      <!-- Image Carousel Section -->
+      <!-- 图片走马灯 -->
       <el-carousel height="700px" indicator-position="outside" :interval="4000">
         <el-carousel-item v-for="(image, index) in carouselImages" :key="index">
           <img :src="image" style="display: block; width: 100%; height: 700px" alt="Travel Image" />
         </el-carousel-item>
       </el-carousel>
 
-      <!-- Partners Section with Scrollbar -->
+      <!-- 展示团队背景 -->
       <section style="background-color: #fff; padding: 3.5rem 0 5rem; text-align: center">
         <h2 style="font-size: 3rem; font-weight: bold; color: #002c6a; margin-bottom: -2rem">
           由值得信赖的研发团队提供支持
         </h2>
+        <!-- ↓ NJU、lamda logo，因为比赛要求所以没展示-->
         <!-- <el-scrollbar height="100px">
           <div style="display: flex; justify-content: center; gap: 7rem">
             <img
@@ -113,47 +115,32 @@ import { Search } from '@element-plus/icons-vue'
 export default {
   name: 'ChinaTravel',
   components: {
-    Search
+    Search //搜索的图标icon
   },
   data() {
     return {
       splitText: "Hi, I'm your  personal  travel  agent. Let's  get  started!".split(/\s+/),
       carouselImages: [
+        //走马灯图片
         new URL('../assets/img1.jpg', import.meta.url).href,
         new URL('../assets/img1.jpg', import.meta.url).href,
         new URL('../assets/img1.jpg', import.meta.url).href
       ],
       partners: [
+        //NJU、lamda logo
         { name: 'nju', image: 'https://www.lamda.nju.edu.cn/2022_files/NJU_badge.png' },
         {
           name: 'lamda',
           image: 'https://www.lamda.nju.edu.cn/2022_files/verylarge1.png'
         }
-      ],
-      socialLinks: [
-        { name: 'TikTok', icon: 'https://via.placeholder.com/24', url: '#' },
-        { name: 'Instagram', icon: 'https://via.placeholder.com/24', url: '#' },
-        { name: 'LinkedIn', icon: 'https://via.placeholder.com/24', url: '#' },
-        { name: 'Pinterest', icon: 'https://via.placeholder.com/24', url: '#' },
-        { name: 'Reddit', icon: 'https://via.placeholder.com/24', url: '#' }
       ]
     }
   },
   methods: {
     startTravel() {
+      //路由跳转
       this.$router.push('/query-submit')
-    },
-    resizeImage(event) {
-      const img = event.target
-      const MAX_WIDTH = 800
-      const MAX_HEIGHT = 300
-      if (img.naturalWidth > MAX_WIDTH || img.naturalHeight > MAX_HEIGHT) {
-        img.style.width = `${MAX_WIDTH}px`
-        img.style.height = `${MAX_HEIGHT}px`
-      }
     }
   }
 }
 </script>
-
-<style scoped></style>
