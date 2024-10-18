@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+    <!-- 配置高德地图 API 代理 -->
+    <script type="text/javascript">
+      window._AMapSecurityConfig = {
+        serviceHost: "http://114.212.22.109:7890/_AMapService",
+        securityJsCode: '49f66ab58a645fab0c230902012a7459'
+      };
+    </script>
+    <!-- 引入高德地图 API -->
+    <script src="https://webapi.amap.com/maps?v=2.0&key=d475ffcb9753c4295c21aa816a0f2d7b"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
